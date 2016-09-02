@@ -12,7 +12,7 @@
 # http://www.econ.msu.edu/faculty/papke/
 # -------------------------------------
 
-setwd("C:/Users/Tomas/Documents/LEI/Papke_Wooldridge2008statafiles")
+setwd("C:/Users/Tomas/Documents/Wooldridge_R_code/data/Papke_Wooldridge2008statafiles")
 
 library(haven)
 library(plm)
@@ -40,7 +40,7 @@ mean(PWdata$enroll[PWdata$year %in% 2001], na.rm=TRUE)
 # all models have year dummies for 1996-2001
 
 # only look at 1995-2001
-PWdata2 <- PWdata[PWdata$year >=1995,]
+PWdata2 <- PWdata[PWdata$year >= 1995,]
 
 # linear model
 lm0 <- lm(math4 ~ lavgrexp + lunch + lenroll + y01 + y00 + y99 + y98 + y97 + y96, data=PWdata2)
@@ -57,11 +57,17 @@ cre0 <- lm(math4 ~ lavgrexp + lunch + lenroll + y96 + y97 + y98 + y99 + y00 + y0
 # and now the endogeneity bit
 # -------------------------------------
 
+# following line indictes exppp is in real (2001) values
+quantile(PWdata$exppp[PWdata$year %in% 1994]/PWdata$cpi[PWdata$year %in% 1994], c(0.1, 0.25, 0.5, 0.75, 0.9), na.rm=TRUE
 
 iv_stage1 <- lm(lavgrexp ~ lfound + lexppp94 + lunch + lenroll + alunch + alenroll +
-                  le94y96 + le94y97 + le94y98 + le94y99 + le94y00 + le94y01 +
-                  y96 + y97 + y98 + y99 + y00 + y01, data=PWdata2)
+                  y96 + y97 + y98 + y99 + y00 + y01 +
+                  lfndy96 + lfndy97 + lfndy98 + lfndy99 + lfndy00 + lfndy01 +
+                  le94y96 + le94y97 + le94y98 + le94y99 + le94y00 + le94y01
+                  , data=PWdata2)
+
 v <- residuals(iv_stage1)
+
 iv_stage2 <- lm(math4 ~ lavgrexp + lunch + lenroll +
                   y96 + y97 + y98 + y99 + y00 + y01 +
                   lexppp94 +
