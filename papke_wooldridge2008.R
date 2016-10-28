@@ -175,6 +175,7 @@ form1 <- formula(iv_stage1)# formula for stage 1
 
 form2 <- formula(fpr)
 
+
 for (i in 1:reps){
   index <- sample(1:length(clusters), length(clusters), replace=TRUE)
   clusters_sampled <- clusters[index]
@@ -209,14 +210,25 @@ SE_boot_cluster_stata <- dfc*SE_boot_cluster
 SE_boot_cluster[c(2, 4, 6, 3)]
 SE_boot_cluster_stata[c(2, 4, 6, 3)]
 
-# 0.7392311 0.2273359 0.2176823 0.8099235
-# 
+# changing the seed suggests that there is
+# a lot of variability in the results
 
-# 0.7447456 0.2290317 0.2193062 0.8159653
-#
+# seed is 13878
+# 0.7169436 0.2087421 0.2122839 0.7903252
+# 0.7222917 0.2102993 0.2138674 0.7962208
+
+# seed is 123
+# 0.7586216 0.2239738 0.2188220 0.8225165
+# 0.7642807 0.2256446 0.2204543 0.8286522
+
+# seed is 423
+# 0.6874186 0.2116441 0.2035322 0.7569649
+# 0.6925466 0.2132229 0.2050505 0.7626117
 
 # work ou the t values
 b <- coefficients(fpr)
 df <- N - length(b)
 t <- b/SE_boot_cluster
 p.value = 2*pt(abs(t), df=df, lower=FALSE)
+
+# finally do the APEs as in the paper
